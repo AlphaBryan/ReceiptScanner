@@ -47,7 +47,7 @@ export default function Scanning() {
         // @ts-ignore
         const photo = await camera.current.takePictureAsync(options);
         setPhoto(photo);
-        Alert.alert("Photo saved to", photo.uri);
+        // Alert.alert("Photo saved to", photo.uri);
       } catch (error) {
         console.log("erreur: ", error);
       }

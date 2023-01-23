@@ -4,12 +4,10 @@ import { Text, View } from "../components/Themed";
 import { Camera, CameraType } from "expo-camera";
 import { useState, useRef, useEffect } from "react";
 import { Button, TouchableOpacity, Alert } from "react-native";
+import { scanningMotors } from "../scanningMotors/scanningMotors";
+import TextRecognition from "react-native-text-recognition";
 
 export default function Scanning() {
-  // const camera = Camera as any;
-
-  //objet camera with useRef
-
   const camera = useRef();
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -24,6 +22,21 @@ export default function Scanning() {
       //   await MediaLibrary.requestPermissionsAsync();
     })();
   }, []);
+  useEffect(() => {
+    (async () => {
+      if (photo) {
+        try {
+          console.log("photo") 
+          const result = await TextRecognition.recognize(photo.uri);
+          console.log("result: ", result);
+        } catch (error) {
+          console.log("error: ", error);
+        }
+      }
+      // const mediaLibraryPermission =
+      //   await MediaLibrary.requestPermissionsAsync();
+    })();
+  }, [photo]);
 
   if (permission === null) {
     return <Text>Error with camera permission</Text>;
@@ -55,9 +68,13 @@ export default function Scanning() {
   }
   async function sendPicture() {
     console.log("Send photo to OCR. ");
+    try {
+      scanningMotors(photo.uri);
+    } catch (error) {
+      console.log("erreur: ", error);
+    }
   }
 
- 
   if (photo) {
     return (
       <View style={styles.container}>
@@ -78,7 +95,11 @@ export default function Scanning() {
             <Text
               style={[
                 styles.text,
-                { marginHorizontal: "5%", color: "#316ccc", fontWeight: "bold" },
+                {
+                  marginHorizontal: "5%",
+                  color: "#316ccc",
+                  fontWeight: "bold",
+                },
               ]}
             >
               Envoyer

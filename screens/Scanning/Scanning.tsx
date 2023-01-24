@@ -1,10 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { Image, Platform, StyleSheet } from "react-native";
-import { Text, View } from "../components/Themed";
+import { Text, View } from "../../components/Themed";
 import { Camera, CameraType } from "expo-camera";
 import { useState, useRef, useEffect } from "react";
 import { Button, TouchableOpacity, Alert } from "react-native";
-import { scanningMotors } from "../scanningMotors/scanningMotors";
+import { scanningMotors } from "../../scanningMotors/scanningMotors";
 import TextRecognition from "react-native-text-recognition";
 
 export default function Scanning() {
@@ -58,7 +58,7 @@ export default function Scanning() {
     if (Camera) {
       try {
         // @ts-ignore
-        const photo = await camera.current.takePictureAsync(options) ;
+        const photo = await camera.current.takePictureAsync(options);
         setPhoto(photo);
         // console.log("photo: ", photo);
         //stringfy the base64

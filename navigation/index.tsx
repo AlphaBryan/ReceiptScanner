@@ -16,7 +16,7 @@ import { ColorSchemeName, Pressable } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import Scanning from "../screens/Scanning";
+import Scanning from "../screens/Scanning/Scanning";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import Home from "../screens/Home";
 import Profil from "../screens/Profil";
@@ -26,6 +26,7 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
+import ScanningResult from "../screens/Scanning/ScanningResult";
 
 export default function Navigation({
   colorScheme,
@@ -61,6 +62,11 @@ function RootNavigator() {
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
       />
+      {/* <Stack.Screen
+        name="ScanningResult"
+        component={ScanningResult}
+        // options={{ title: "ScanningResult" }}
+      /> */}
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Scanning" component={Scanning} />
       </Stack.Group>
@@ -93,6 +99,11 @@ function BottomTabNavigator() {
 
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         })}
+      />
+      <Stack.Screen
+        name="ScanningResult"
+        component={ScanningResult}
+        // options={{ title: "ScanningResult" }}
       />
       <BottomTab.Screen
         name="TabTwo"

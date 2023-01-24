@@ -22,21 +22,21 @@ export default function Scanning() {
       //   await MediaLibrary.requestPermissionsAsync();
     })();
   }, []);
-  useEffect(() => {
-    (async () => {
-      if (photo) {
-        try {
-          console.log("photo") 
-          const result = await TextRecognition.recognize(photo.uri);
-          console.log("result: ", result);
-        } catch (error) {
-          console.log("error: ", error);
-        }
-      }
-      // const mediaLibraryPermission =
-      //   await MediaLibrary.requestPermissionsAsync();
-    })();
-  }, [photo]);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (photo) {
+  //       try {
+  //         console.log("photo");
+  //         // const result = await TextRecognition.recognize(photo.uri);
+  //         console.log("result: ", result);
+  //       } catch (error) {
+  //         console.log("error: ", error);
+  //       }
+  //     }
+  //     // const mediaLibraryPermission =
+  //     //   await MediaLibrary.requestPermissionsAsync();
+  //   })();
+  // }, [photo]);
 
   if (permission === null) {
     return <Text>Error with camera permission</Text>;
@@ -58,8 +58,12 @@ export default function Scanning() {
     if (Camera) {
       try {
         // @ts-ignore
-        const photo = await camera.current.takePictureAsync(options);
+        const photo = await camera.current.takePictureAsync(options) ;
         setPhoto(photo);
+        // console.log("photo: ", photo);
+        //stringfy the base64
+        // const base64 = JSON.stringify(photo.base64);
+        // console.log("base64: ", base64);
         // Alert.alert("Photo saved to", photo.uri);
       } catch (error) {
         console.log("erreur: ", error);
@@ -69,7 +73,7 @@ export default function Scanning() {
   async function sendPicture() {
     console.log("Send photo to OCR. ");
     try {
-      scanningMotors(photo.uri);
+      scanningMotors(photo);
     } catch (error) {
       console.log("erreur: ", error);
     }

@@ -4,7 +4,7 @@ import TextRecognition from "react-native-text-recognition";
 import { gcpPictureScanning } from "./gcpTextDetectort";
 // const segmentation = require("line-segmentation-gcp-vision-ocr");
 // @ts-ignore
-import { init } from "./lineSegmentation/lineSegmentationGpcVision";
+import { init } from "./lineSegmentation/test1/lineSegmentationGpcVision";
 
 
 export async function scanningMotors(file: string) {

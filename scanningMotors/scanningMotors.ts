@@ -5,6 +5,8 @@ import { gcpPictureScanning } from "./gcpTextDetectort";
 // const segmentation = require("line-segmentation-gcp-vision-ocr");
 // @ts-ignore
 import { init } from "./lineSegmentation/test1/lineSegmentationGpcVision";
+// @ts-ignore
+import { initLineSegmentation } from "./lineSegmentation/test2/lineSegmentationGpcVision";
 
 
 export async function scanningMotors(file: string) {
@@ -13,7 +15,7 @@ export async function scanningMotors(file: string) {
     // @ts-ignore
     const scanResult = await gcpPictureScanning(file.base64);
     console.log("Analyze Done.");
-    let segmentedResult = init(scanResult.responses[0]);
+    let segmentedResult = initLineSegmentation(scanResult.responses[0]);
     const fullTextAnnotation = scanResult.responses[0].fullTextAnnotation;
     const text = fullTextAnnotation?.text || "";
     console.log("result: ", segmentedResult);

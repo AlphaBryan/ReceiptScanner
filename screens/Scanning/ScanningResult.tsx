@@ -1,30 +1,53 @@
-import { StyleSheet } from "react-native";
+import { useState } from "react";
+import { ScrollView, StyleSheet, ActivityIndicator } from "react-native";
 
 import { Text, View } from "../../components/Themed";
 
 export default function ScanningResult() {
-  const market : market = {
+  const [loading, setLoading] = useState(false);
+  const market: market = {
     name: "Carrefour",
     address: "Rue de la République, 75011 Paris",
     phone: "01 43 54 65 76",
     city: "Paris",
-  }
+  };
+  const product1: product = {
+    name: "Carotte",
+    quantity: 2,
+    price: 2.5,
+  };
   const ticket: ticket = {
     market: market,
     client: {
       type: "ESCOMPTE ETUDIANT",
       numberClient: "Numéro de client:9991234",
     },
-    Products: [],
+    Products: [product1, product1],
     total: 0,
   };
+  if (loading == true) {
+    return (
+      <View style={styles.container}>
+        {/* //waiting for the result */}
+        <Text style={styles.pageTitle}>Scanning Ticket</Text>
+        <Text style={styles.marketName}>Loading...</Text>
+        <ActivityIndicator
+          size="large"
+          color="gray"
+          style={{ marginTop: "5%" }}
+        />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
-      <Text style={styles.pageTitle}>Scanning Result</Text>
+      <Text style={styles.pageTitle}>Scanned Ticket</Text>
       <Text style={styles.marketName}>{ticket.market.name}</Text>
       <Text style={styles.marketInfo}>{ticket.market.address}</Text>
       <Text style={styles.marketInfo}>{ticket.market.city}</Text>
-      <Text style={[styles.clientInfo, { fontWeight: "bold" , paddingTop:'5%'}]}>
+      <Text
+        style={[styles.clientInfo, { fontWeight: "bold", paddingTop: "5%" }]}
+      >
         {ticket.client.type}
       </Text>
       <Text style={styles.clientInfo}>{ticket.client.numberClient}</Text>
@@ -33,21 +56,22 @@ export default function ScanningResult() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
+      <ScrollView style={styles.articlesContainer}>
+        {ticket.Products.map((product, index) => (
+          <View style={styles.articleContainer} key={index}>
+            <Text style={styles.text}>
+              <Text style={{ fontWeight: "bold" }}>{product.name} </Text> x{" "}
+              {product.quantity}
+            </Text>
+            <Text style={styles.text}>{product.price} $</Text>
+          </View>
+        ))}
+      </ScrollView>
       <View style={styles.articleContainer}>
-        <Text
-          style={styles.text}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)"
-        >
-          Carotte
+        <Text style={styles.text}>
+          <Text style={{ fontWeight: "bold" }}>Total </Text>
         </Text>
-        <Text
-          style={styles.text}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)"
-        >
-          Carotte
-        </Text>
+        <Text style={styles.text}>{ticket.total} $</Text>
       </View>
     </View>
   );
@@ -79,19 +103,29 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   separator: {
-    marginVertical: "5%",
+    marginTop: "5%",
     height: 1,
     width: "80%",
     backgroundColor: "#eee",
   },
+  articlesContainer: {
+    width: "100%",
+  },
   articleContainer: {
-    // alignItems: "center",
-    // flex: 1,
     justifyContent: "space-between",
-    alignContent: "space-between",
-    alignItems: "flex-start",
-    // marginHorizontal: 50,
+    backgroundColor: "#eee",
+    width: "85%",
     flexDirection: "row",
+    padding: "2%",
+    borderRadius: 10,
+    marginVertical: "2%",
+    alignSelf: "center",
+    shadowColor: "gray",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.5,
   },
   text: {
     fontSize: 17,

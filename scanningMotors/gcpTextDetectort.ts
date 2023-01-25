@@ -11,7 +11,7 @@ const API_URL = `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}
         },
         features: [
           {
-            type: "TEXT_DETECTION", //we will use this API for text detection purposes.
+            type: "DOCUMENT_TEXT_DETECTION", //we will use this API for text detection purposes.
             maxResults: 1,
           },
         ],

@@ -27,7 +27,7 @@ export function analyzeTicketAdonis(ticketText: string) {
   //   ticketTextArray.unshift("ADONIS");
   let listStartIndex: number | any = null;
   let listEndIndex: number | any = null;
-  console.log("ticketTextArray: ", ticketTextArray);
+//   console.log("ticketTextArray: ", ticketTextArray);
   ticketTextArray.forEach((element, index) => {
     const articles = {};
     if (element.includes("ADONIS") && ticket.market.name === "") {
@@ -53,7 +53,7 @@ export function analyzeTicketAdonis(ticketText: string) {
         !element.includes("Marché méditerranéen") &&
         !element.includes("POISS.FRAIS.")
       ) {
-        console.log("element: ", element);
+        // console.log("element: ", element);
         const productObject: product = {
           name: element,
           quantity: 1,
@@ -74,13 +74,12 @@ export function analyzeTicketAdonis(ticketText: string) {
     }
     if (element.includes("ÉCONOM")) {
       ticket.Products.forEach((product, order) => {
-        console.log("coucou:");
         product.price = parseFloat(ticketTextArray[index + order + 1]);
         ticket.total += product.price;
       });
     }
   });
-  console.log("ticket: ", ticket.Products);
+//   console.log("ticket: ", ticket.Products);
   analyze.ticket = ticket;
   return analyze;
 }

@@ -37,7 +37,7 @@ export default function ScanningResult({ navigation, route }: any) {
       //set the ticket
       const ticketText = await scanningMotors(photo);
       const analyzedTicket = analyzeTicketAdonis(ticketText);
-      console.log("analyzedTicket: ", analyzedTicket);
+      // console.log("analyzedTicket: ", analyzedTicket);
       if (analyzedTicket.ticket != null) {
         setTicket(analyzedTicket.ticket);
         setTicketText(analyzedTicket.ticketText);

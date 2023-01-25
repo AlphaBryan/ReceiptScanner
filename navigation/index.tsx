@@ -62,11 +62,11 @@ function RootNavigator() {
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="ScanningResult"
         component={ScanningResult}
-        // options={{ title: "ScanningResult" }}
-      /> */}
+        options={{ headerShown: false }}
+      />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Scanning" component={Scanning} />
       </Stack.Group>
@@ -100,11 +100,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         })}
       />
-      <Stack.Screen
-        name="ScanningResult"
-        component={ScanningResult}
-        // options={{ title: "ScanningResult" }}
-      />
+      
       <BottomTab.Screen
         name="TabTwo"
         component={Profil}

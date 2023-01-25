@@ -5,14 +5,14 @@ import { gcpPictureScanning } from "./gcpTextDetectort";
 
 export async function scanningMotors(file: string) {
   try {
-    console.log("Analyzing Picture...");
+    console.log("Analyze Started...");
     // @ts-ignore
     const scanResult = await gcpPictureScanning(file.base64);
     console.log("Analyze Done.");
     const fullTextAnnotation = scanResult.responses[0].fullTextAnnotation;
-    const text = fullTextAnnotation.text;
-    // const textArray = text.split("\n");
+    const text = fullTextAnnotation?.text || "";
     console.log("result: ", text);
+    return text;
   } catch (error) {
     console.log("Scanning motors error: ", error);
   }

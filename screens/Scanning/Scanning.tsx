@@ -6,8 +6,9 @@ import { useState, useRef, useEffect } from "react";
 import { Button, TouchableOpacity, Alert } from "react-native";
 import { scanningMotors } from "../../scanningMotors/scanningMotors";
 import TextRecognition from "react-native-text-recognition";
+import { RootStackScreenProps } from '../../types';
 
-export default function Scanning() {
+export default function Scanning({ navigation }: any) {
   const camera = useRef();
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -73,7 +74,9 @@ export default function Scanning() {
   async function sendPicture() {
     console.log("Send photo to OCR. ");
     try {
-      scanningMotors(photo);
+      // scanningMotors(photo);
+      navigation.goBack();
+      navigation.navigate("ScanningResult" , { photo: photo });
     } catch (error) {
       console.log("erreur: ", error);
     }

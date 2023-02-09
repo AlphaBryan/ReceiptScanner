@@ -9,6 +9,7 @@ import { analyzeTicketAdonis } from "../../commerces/Adonis";
 import { Text, View } from "../../components/Themed";
 import { scanningMotors } from "../../scanningMotors/scanningMotors";
 import { Entypo } from "@expo/vector-icons";
+import { analyzeTicketIGA } from "../../commerces/IGA";
 
 export default function ScanningResult({ navigation, route }: any) {
   const [loading, setLoading] = useState(false);
@@ -33,17 +34,13 @@ export default function ScanningResult({ navigation, route }: any) {
   useEffect(() => {
     setLoading(true);
     const loadTicket = async () => {
-      //fetch the ticket from the api
-      //set the ticket
       const ticketText = await scanningMotors(photo);
-      const analyzedTicket = analyzeTicketAdonis(ticketText);
-      // console.log("analyzedTicket: ", analyzedTicket);
+      const analyzedTicket = analyzeTicketIGA(ticketText);
       if (analyzedTicket.ticket != null) {
         setTicket(analyzedTicket.ticket);
         setTicketText(analyzedTicket.ticketText);
-      }
-      else {
-        setTicketText('Aucun ticket trouvé');
+      } else {
+        setTicketText("Aucun ticket trouvé");
       }
       setLoading(false);
     };
@@ -53,7 +50,6 @@ export default function ScanningResult({ navigation, route }: any) {
   if (loading == true) {
     return (
       <View style={styles.firstContainer}>
-        {/* //waiting for the result */}
         <Text style={[styles.pageTitle]}>Scanning Ticket</Text>
         <Text style={styles.marketName}>Loading...</Text>
         <ActivityIndicator

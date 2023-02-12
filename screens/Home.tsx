@@ -2,12 +2,20 @@ import { Button, StyleSheet, TouchableOpacity } from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
+import { lineAnalysis } from "../scanningMotors/lineAnalysis";
+import ocrResultExample from "../tests/GoogeOcrResult";
 import { RootTabScreenProps } from "../types";
 
 export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scannez vos tickets de caisse</Text>
+      <TouchableOpacity
+        onPress={() => lineAnalysis(ocrResultExample)}
+        style={styles.buttonTest}
+      >
+        <Text style={styles.buttonTextTest}>test</Text>
+      </TouchableOpacity>
       <View
         style={styles.separator}
         lightColor="#eee"
@@ -76,9 +84,31 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.4,
   },
+  buttonTest: {
+    alignItems: "center",
+    backgroundColor: "green",
+    width: "15%",
+    marginTop: 10,
+    aspectRatio: 1,
+    borderRadius: 20,
+    textAlign: "center",
+    alignContent: "center",
+    justifyContent: "center",
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+  },
   buttonText: {
     color: "white",
     fontSize: 50,
+    bottom: "7%",
+  },
+  buttonTextTest: {
+    color: "white",
+    fontSize: 25,
     bottom: "7%",
   },
 });

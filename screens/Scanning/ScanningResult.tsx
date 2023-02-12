@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { analyzeTicketAdonis } from "../../commerces/Adonis";
+import { analyzeTicketIGA } from "../../commerces/IGA";
 import { Text, View } from "../../components/Themed";
 import { scanningMotors } from "../../scanningMotors/scanningMotors";
 import { Entypo } from "@expo/vector-icons";
@@ -36,14 +37,14 @@ export default function ScanningResult({ navigation, route }: any) {
       //fetch the ticket from the api
       //set the ticket
       const ticketText = await scanningMotors(photo);
-      const analyzedTicket = analyzeTicketAdonis(ticketText);
+      // const analyzedTicket = analyzeTicketAdonis(ticketText);
+      const analyzedTicket = analyzeTicketIGA(ticketText);
       // console.log("analyzedTicket: ", analyzedTicket);
       if (analyzedTicket.ticket != null) {
         setTicket(analyzedTicket.ticket);
         setTicketText(analyzedTicket.ticketText);
-      }
-      else {
-        setTicketText('Aucun ticket trouvé');
+      } else {
+        setTicketText("Aucun ticket trouvé");
       }
       setLoading(false);
     };

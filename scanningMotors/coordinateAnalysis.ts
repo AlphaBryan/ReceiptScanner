@@ -1,5 +1,5 @@
 
-const SameLineTolerance = 20;
+const SameLineTolerance = 40;
 const SamePhraseTolerance = 190;
 
 export function getSquareCenter(square: Array<Point>): Point {

@@ -1,4 +1,4 @@
-import { getSquareCenter, isOnTheSameLine } from "./coordinateAnalysis";
+import { getSquareCenter, isInTheSamePhrase, isOnTheSameLine } from "./coordinateAnalysis";
 
 export function lineAnalysis(OcrResult: Array<any>): any {
   const lines: { [key: string]: Line } = {};
@@ -7,7 +7,6 @@ export function lineAnalysis(OcrResult: Array<any>): any {
   OcrResult.forEach((element, index) => {
     if (index > 0) {
       const elementCenter = getSquareCenter(element.boundingPoly.vertices);
-      // console.log("Point: ", elementCenter);
       const previousElementCenter = getSquareCenter(
         OcrResult[index - 1].boundingPoly.vertices
       );
@@ -28,19 +27,21 @@ export function lineAnalysis(OcrResult: Array<any>): any {
     }
   });
   Object.entries(lines).forEach(([key, value]) => {
-    // recheck lines object and if there are lines that are close to another line in lines object merge them
     Object.entries(lines).forEach(([key2, value2]) => {
       if (key !== key2) {
         if (isOnTheSameLine(value.coords, value2.coords)) {
           if (lines[key]) {
-            lines[key].text = lines[key]?.text + "-" + lines[key2]?.text;
+            lines[key].text = lines[key]?.text + " " + lines[key2]?.text;
             delete lines[key2];
           }
         }
       }
     });
   });
-  console.log("Lines: ", JSON.stringify(lines, null, 4));
 
+  // Ordonner les lignes par ordre croissant de coordonnées x 
+  const linesArray = Object.values(lines);
+  linesArray.sort((a, b) => a.coords.x - b.coords.x);
+  console.log("linesArray: ", JSON.stringify(linesArray, null, 4));
   return lines;
 }

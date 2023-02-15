@@ -1,4 +1,5 @@
 import { Button, StyleSheet, TouchableOpacity } from "react-native";
+import { useState, useRef, useEffect } from "react";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
@@ -6,12 +7,17 @@ import { lineAnalysis } from "../scanningMotors/lineAnalysis";
 import ocrResultExample from "../tests/GoogeOcrResult";
 import { RootTabScreenProps } from "../types";
 
-export default function Home({ navigation }: RootTabScreenProps<"TabOne">) {
+export default function Home({ navigation }: any) {
+  const [photo, setPhoto] = useState<any>();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scannez vos tickets de caisse</Text>
       <TouchableOpacity
-        onPress={() => lineAnalysis(ocrResultExample)}
+        onPress={() => {
+          const scanResult = lineAnalysis(ocrResultExample);
+          navigation.navigate("ScanningResult", { scanResult: scanResult });
+        }}
         style={styles.buttonTest}
       >
         <Text style={styles.buttonTextTest}>test</Text>

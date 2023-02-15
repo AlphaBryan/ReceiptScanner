@@ -14,6 +14,7 @@ import { Entypo } from "@expo/vector-icons";
 export default function ScanningResult({ navigation, route }: any) {
   const [loading, setLoading] = useState(false);
   const photo = route.params.photo;
+  const scanResult = route.params.scanResult;
   const ticketEmpty: ticket = {
     market: {
       name: "Aucun nom de magasin trouvé",
@@ -34,12 +35,8 @@ export default function ScanningResult({ navigation, route }: any) {
   useEffect(() => {
     setLoading(true);
     const loadTicket = async () => {
-      //fetch the ticket from the api
-      //set the ticket
-      const ticketText = await scanningMotors(photo);
-      // const analyzedTicket = analyzeTicketAdonis(ticketText);
-      const analyzedTicket = analyzeTicketIGA(ticketText);
-      // console.log("analyzedTicket: ", analyzedTicket);
+      // console.log("scanResult", scanResult);
+      const analyzedTicket = analyzeTicketIGA(scanResult);
       if (analyzedTicket.ticket != null) {
         setTicket(analyzedTicket.ticket);
         setTicketText(analyzedTicket.ticketText);
@@ -48,8 +45,25 @@ export default function ScanningResult({ navigation, route }: any) {
       }
       setLoading(false);
     };
-    loadTicket();
+    loadTicket().catch((error) => {
+      console.log(error);
+    });
   }, []);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const loadTicket = async () => {
+  //     const ticketText = await scanningMotors(photo);
+  //     const analyzedTicket = analyzeTicketIGA(ticketText);
+  //     if (analyzedTicket.ticket != null) {
+  //       setTicket(analyzedTicket.ticket);
+  //       setTicketText(analyzedTicket.ticketText);
+  //     } else {
+  //       setTicketText("Aucun ticket trouvé");
+  //     }
+  //     setLoading(false);
+  //   };
+  //   loadTicket();
+  // }, []);
 
   if (loading == true) {
     return (

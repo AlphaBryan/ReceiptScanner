@@ -1,6 +1,7 @@
-export function analyzeTicketIGA(ticketText: string) {
+export function analyzeTicketIGA(ticketLinesArray: Array<Line>) {
   const analyze = {
-    ticketText: ticketText as string,
+    // ticketText: JSON.stringify(ticketLinesJSON, null, 4) as string,
+    ticketText: JSON.stringify(ticketLinesArray, null, 4) as string,
     ticket: null as ticket | null,
   };
   const market: market = {
@@ -23,7 +24,6 @@ export function analyzeTicketIGA(ticketText: string) {
     Products: [],
     total: 0,
   };
-  const ticketTextArray = ticketText.split("\n");
   const labelReduction = "RABAIS SUR LE PRIX COURANT";
   let listStartIndex: number | any = null;
   let listEndIndex: number | any = null;
@@ -43,45 +43,50 @@ export function analyzeTicketIGA(ticketText: string) {
     "Média",
     "PRIX",
     "articles",
+    "@",
+    "x",
+    "ECONOMIE",
   ];
-  ticketTextArray.forEach((element, index) => {
+  // console.log("ticketLinesJSON: ", ticketLinesJSON);
+  // const ticketLinesArray = Object.values(ticketLinesJSON);
+
+  ticketLinesArray.forEach((line: Line, index: number) => {
+    // console.log("line: ", line);
     const articles = {};
-    if (element === "IGA" && ticket.market.name == "") {
-      ticket.market.name = element;
-      ticket.market.address = ticketTextArray[index + 1];
-      ticket.market.phone = ticketTextArray[index + 2];
-      ticket.market.city = ticketTextArray[index + 5];
-      ticket.client.type = ticketTextArray[index + 4];
-      //   console.log("listStartIndex: ", listStartIndex);
+    if (line.text === "IGA" && ticket.market.name == "") {
+      ticket.market.name = line.text;
+      ticket.market.address = ticketLinesArray[index + 1].text;
+      ticket.market.phone = ticketLinesArray[index + 2].text;
+      ticket.market.city = ticketLinesArray[index + 5].text;
+      ticket.client.type = ticketLinesArray[index + 4].text;
     }
 
-    if (element.includes("EPICERIE")) {
+    if (line.text.includes("EPICERIE")) {
       listStartIndex = index;
-      numberOfProducts = parseInt(ticketTextArray[ticketTextArray.length - 1]);
-      listEndIndex = index + numberOfProducts;
     }
-    if (
-      index > listStartIndex &&
-      listStartIndex != null
-      //   && index < listEndIndex
-    ) {
+    if (line.text.includes("TOTAL")) {
+      listEndIndex = index;
+      ticket.total = Number(line.text.split("$")[1].trim());
+    }
+    if (index > listStartIndex && listStartIndex != null) {
       if (
-        !element.includes("$") &&
-        // ticket.Products.length < numberOfProducts &&
-        !element.includes(labelReduction) &&
-        // element not include any of the ignored labels
-        !IGNORED_LABELS.some((label) => element.includes(label)) &&
-        ticketTextArray[ticketTextArray.length - 1] !== element
+        line.text.length > 10 && // Avoids lines with only numbers
+        !line.text.includes(labelReduction) &&
+        !IGNORED_LABELS.some((label) => line.text.includes(label))
       ) {
+        let name = line.text;
+        let price = -1;
+        if (line.text.includes("$")) {
+          name = line.text.split("$")[0].trim();
+          price = Number(line.text.split("$")[1].trim());
+        }
         const productObject: product = {
-          name: element,
+          name: name,
           quantity: 1,
-          price: -1,
+          price: price,
         };
-
-        // check if element name is already present in the products list and if so, increment the quantity else add it to the list
         const productIndex = ticket.Products.findIndex(
-          (product) => product.name === element
+          (product) => product.name === name
         );
         if (productIndex !== -1) {
           ticket.Products[productIndex].quantity++;

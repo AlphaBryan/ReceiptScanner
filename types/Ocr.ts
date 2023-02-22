@@ -6,3 +6,8 @@ type Line = {
   coords: Point;
   text: string;
 };
+
+type LineMerged = {
+  coordsList: Point[];
+  text: string;
+};

@@ -1,5 +1,7 @@
 
 const SameLineTolerance = 25;
+// y'a certain elemement qui on 26 
+//Faire un aglo qui vas checker si certain element sont seul après le taf et si oui refaire le calcul avec une tolérance plus grande sur ces element la en particulier. 
 const SamePhraseTolerance = 190;
 
 export function getSquareCenter(square: Array<Point>): Point {

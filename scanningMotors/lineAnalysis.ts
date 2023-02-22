@@ -2,65 +2,108 @@ import {
   getSquareCenter,
   isInTheSamePhrase,
   isOnTheSameLinecoordsList,
+  sortByCoordsListX,
 } from "./coordinateAnalysis";
 
-export function lineAnalysis(OcrResult: Array<any>): any {
-  const lines: LineMerged[] = [];
-  OcrResult.forEach((element, index) => {
-    if (index > 0) {
-      const elementCenter = getSquareCenter(element.boundingPoly.vertices);
-      const previousElementCenter = getSquareCenter(
-        OcrResult[index - 1].boundingPoly.vertices
-      );
-      if (isOnTheSameLinecoordsList([elementCenter], [previousElementCenter])) {
-        const lastLine = lines[lines.length - 1];
-        lastLine.text = `${lastLine.text} ${element.description}`;
-        lastLine.coordsList.push(elementCenter);
-      } else {
-        lines.push({
-          coordsList: [elementCenter],
-          text: element.description,
-        });
-      }
-    } else {
-      lines.push({
-        coordsList: [getSquareCenter(element.boundingPoly.vertices)],
-        text: element.description,
-      });
-    }
-  });
+export function lineAnalysis(inputData) {
+  // remove the first element of the array
+  inputData.shift();
+  const lines = [];
 
-  let hasChanged = true;
-  while (hasChanged) {
-    hasChanged = false;
-    for (let i = 0; i < lines.length; i++) {
-      for (let j = i + 1; j < lines.length; j++) {
-        if (
-          isOnTheSameLinecoordsList(lines[i].coordsList, lines[j].coordsList)
-        ) {
-          lines[i].coordsList.push(...lines[j].coordsList);
-          lines[i].text = `${lines[i].text} ${lines[j].text}`;
-          lines.splice(j, 1);
-          hasChanged = true;
+  function distance(x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function mergeLines(lines) {
+    const mergedLines = [];
+
+    // Sort lines based on x-coordinate of the first coordinate in each line
+    lines.sort((a, b) => a.coordsList[0].x - b.coordsList[0].x);
+    // lines.sort((a, b) => sortByCoordsListX(a.coordsList, b.coordsList));
+    // Merge lines that have the same x-coordinates with a tolerance of 25 pixels
+    let currentLine = lines[0];
+    for (let i = 1; i < lines.length; i++) {
+      const nextLine = lines[i];
+      if (
+        // nextLine.coordsList[0].x - currentLine.coordsList.slice(-1)[0].x <=
+        // 25
+        isOnTheSameLinecoordsList(currentLine.coordsList, nextLine.coordsList)
+      ) {
+        currentLine.coordsList.push(...nextLine.coordsList);
+        currentLine.text += " " + nextLine.text;
+      } else {
+        mergedLines.push(currentLine);
+        currentLine = nextLine;
+      }
+    }
+    mergedLines.push(currentLine);
+
+    return mergedLines;
+  }
+
+  for (let i = 0; i < inputData.length; i++) {
+    const line = inputData[i];
+    let currentText = line.description.trim();
+    let currentCoords = [getSquareCenter(line.boundingPoly.vertices)];
+
+    for (let j = 0; j < line.length; j++) {
+      const word = line[j];
+      if (word.text.trim() !== "") {
+        if (currentText !== "") {
+          currentText += " ";
+        }
+        currentText += word.text.trim();
+      }
+      if (word.hasOwnProperty("box")) {
+        const coords = {
+          x: (word.box[0] + word.box[2]) / 2,
+          y: (word.box[1] + word.box[3]) / 2,
+        };
+        currentCoords.push(coords);
+      }
+    }
+
+    if (currentText !== "" && currentCoords.length > 0) {
+      let found = false;
+      for (let k = 0; k < lines.length; k++) {
+        // const distanceToLine = distance(
+        //   currentCoords[0].x,
+        //   currentCoords[0].y,
+        //   lines[k].coordsList[0].x,
+        //   lines[k].coordsList[0].y
+        // );
+        // dont merge if text already include price ex: $1.00
+        if (lines[k].text.includes("$")) {
+          break;
+        }
+        if (isOnTheSameLinecoordsList(currentCoords, lines[k].coordsList)) {
+          lines[k].coordsList.push(...currentCoords);
+          lines[k].text += " " + currentText;
+          found = true;
           break;
         }
       }
-      if (hasChanged) {
-        break;
+
+      if (!found) {
+        lines.push({
+          coordsList: currentCoords,
+          text: currentText,
+        });
       }
     }
   }
 
-  // Ordonner les lignes par ordre croissant de coordonnées x
-  lines.sort((a, b) => {
-    const aX =
-      a.coordsList.reduce((acc, curr) => acc + curr.x, 0) / a.coordsList.length;
-    const bX =
-      b.coordsList.reduce((acc, curr) => acc + curr.x, 0) / b.coordsList.length;
-    return aX - bX;
-  });
+  const mergedLines = mergeLines(lines);
+  // mergedLines.sort((a, b) => a.coordsList[0].x - b.coordsList[0].x);
 
-  console.log("linesArray: ", JSON.stringify(lines, null, 4));
-  // console.log("linesArray: ", lines);
-  return lines;
+  // console.log("mergedLines", JSON.stringify(mergedLines, null, 2));
+
+  // console.log each text line
+  for (let i = 0; i < mergedLines.length; i++) {
+    console.log(mergedLines[i].text);
+  }
+
+  return mergedLines;
 }

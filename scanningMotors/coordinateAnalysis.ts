@@ -1,5 +1,5 @@
 
-const SameLineTolerance = 25;
+const SameLineTolerance = 20;
 const SamePhraseTolerance = 190;
 
 export function getSquareCenter(square: Array<Point>): Point {
@@ -37,4 +37,21 @@ export function isOnTheSameLinecoordsList(coordsList1: Point[], coordsList2: Poi
     }
   }
   return false;
+}
+
+export function sortByCoordsListX(coordsList1: Point[], coordsList2: Point[]): number {
+  // Compare all the x-coordinates of the two coordsLists to find the closest one
+  let minDistance = Number.MAX_VALUE;
+  for (let i = 0; i < coordsList1.length; i++) {
+    for (let j = 0; j < coordsList2.length; j++) {
+      const coords1 = coordsList1[i];
+      const coords2 = coordsList2[j];
+      const distance = Math.abs(coords1.x - coords2.x);
+      if (distance < minDistance) {
+        minDistance = distance;
+      }
+    }
+  }
+  return minDistance;
+
 }

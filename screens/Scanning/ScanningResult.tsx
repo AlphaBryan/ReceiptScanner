@@ -5,15 +5,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import { analyzeTicketAdonis } from "../../commerces/Adonis";
-import { analyzeTicketIGA } from "../../commerces/IGA";
 import { Text, View } from "../../components/Themed";
-import { scanningMotors } from "../../scanningMotors/scanningMotors";
 import { Entypo } from "@expo/vector-icons";
 
 export default function ScanningResult({ navigation, route }: any) {
   const [loading, setLoading] = useState(false);
-  const photo = route.params.photo;
   const scanResult = route.params.scanResult;
   const ticketEmpty: ticket = {
     market: {
@@ -25,50 +21,24 @@ export default function ScanningResult({ navigation, route }: any) {
     client: {
       type: "Type de client: Aucun type de client trouvé",
       numberClient: "Aucun numéro de client trouvé",
+      paymentMethod: "Not found",
     },
-    Products: [],
-    total: 0,
+    products: [],
+    totals: {
+      total: -1,
+      tax: -1,
+      subTotal: -1,
+    },
   };
   const [ticket, setTicket] = useState<ticket>(ticketEmpty);
-  const [ticketText, setTicketText] = useState<string>("");
-  //use effect with async function in it
+
   useEffect(() => {
-    setLoading(true);
-    const loadTicket = async () => {
-      // console.log("scanResult", scanResult);
-      const analyzedTicket = analyzeTicketIGA(scanResult);
-      if (analyzedTicket.ticket != null) {
-        setTicket(analyzedTicket.ticket);
-        setTicketText(analyzedTicket.ticketText);
-      } else {
-        setTicketText("Aucun ticket trouvé");
-      }
-      setLoading(false);
-    };
-    loadTicket().catch((error) => {
-      console.log(error);
-    });
+    setTicket(scanResult);
   }, []);
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const loadTicket = async () => {
-  //     const ticketText = await scanningMotors(photo);
-  //     const analyzedTicket = analyzeTicketIGA(ticketText);
-  //     if (analyzedTicket.ticket != null) {
-  //       setTicket(analyzedTicket.ticket);
-  //       setTicketText(analyzedTicket.ticketText);
-  //     } else {
-  //       setTicketText("Aucun ticket trouvé");
-  //     }
-  //     setLoading(false);
-  //   };
-  //   loadTicket();
-  // }, []);
 
   if (loading == true) {
     return (
       <View style={styles.firstContainer}>
-        {/* //waiting for the result */}
         <Text style={[styles.pageTitle]}>Scanning Ticket</Text>
         <Text style={styles.marketName}>Loading...</Text>
         <ActivityIndicator
@@ -81,13 +51,12 @@ export default function ScanningResult({ navigation, route }: any) {
   }
   return (
     <View style={styles.firstContainer}>
-      {/* View in row with flex direction row */}
       <View style={{ flexDirection: "row" }}>
         <Text style={styles.pageTitle}>Scanned Ticket</Text>
         <TouchableOpacity
           style={{ marginLeft: "5%" }}
           onPress={() => {
-            const alertMessage = `• Mots détectés dans le ticket: \n\n${ticketText}`;
+            const alertMessage = `Plus d'info à venir`;
             alert(alertMessage);
           }}
         >
@@ -98,31 +67,27 @@ export default function ScanningResult({ navigation, route }: any) {
       <Text style={styles.marketInfo}>{ticket.market.address}</Text>
       <Text style={styles.marketInfo}>{ticket.market.city}</Text>
       <Text style={styles.marketInfo}>{ticket.market.phone}</Text>
-      <Text
-        style={[styles.clientInfo, { fontWeight: "bold", paddingTop: "5%" }]}
-      >
-        {ticket.client.type}
-      </Text>
-      <Text style={styles.clientInfo}>
-        <Text style={[styles.clientInfo, { fontWeight: "bold" }]}>
-          Numéro du client:
-        </Text>
-        {" " + ticket.client.numberClient}
-      </Text>
+        <>
+          <Text style={[styles.clientInfo, { paddingTop: "2%" }]}>
+            <Text style={ { fontWeight: "bold" }}>
+              Payement method:
+            </Text>
+            { ticket?.client?.paymentMethod != null ? ' '+ ticket?.client?.paymentMethod  :' '+ ticketEmpty.client.paymentMethod}
+          </Text>
+        </>
       <View
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
       <ScrollView style={styles.articlesContainer}>
-        {/* if ticket.Products.length égale à zéro  */}
-        {ticket.Products.length == 0 && (
+        {ticket.products.length == 0 && (
           <View style={{ marginTop: "10%" }}>
             <Text style={styles.text}>Aucun produit trouvé</Text>
             <Text style={styles.text}>Veuillez résessayer</Text>
           </View>
         )}
-        {ticket.Products.map((product, index) => (
+        {ticket.products.map((product, index) => (
           <View style={styles.articleContainer} key={index}>
             <Text style={styles.text}>
               <Text style={{ fontWeight: "bold" }}>{product.name} </Text> x{" "}
@@ -132,11 +97,23 @@ export default function ScanningResult({ navigation, route }: any) {
           </View>
         ))}
       </ScrollView>
-      <View style={[styles.articleContainer, { marginBottom: "10%" }]}>
+      <View style={[styles.articleContainer2, { marginBottom: "0%" }]}>
         <Text style={styles.text}>
-          <Text style={{ fontWeight: "bold" }}>Total </Text>
+          <Text style={{ fontWeight: "bold" }}>SOUS-TOTAL </Text>
         </Text>
-        <Text style={styles.text}>{ticket.total} $</Text>
+        <Text style={styles.text}>{ticket?.totals?.subTotal} $</Text>
+      </View>
+      <View style={[styles.articleContainer2, { marginBottom: "0%" }]}>
+        <Text style={styles.text}>
+          <Text style={{ fontWeight: "bold" }}>TAXES (TPS + TVQ)</Text>
+        </Text>
+        <Text style={styles.text}>{ticket.totals.tax} $</Text>
+      </View>
+      <View style={[styles.articleContainer2, { marginBottom: "10%" }]}>
+        <Text style={styles.text}>
+          <Text style={{ fontWeight: "bold" }}>TOTAL </Text>
+        </Text>
+        <Text style={styles.text}>{ticket.totals.total} $</Text>
       </View>
     </View>
   );
@@ -174,7 +151,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   separator: {
-    marginTop: "5%",
+    marginTop: "3%",
     height: 1,
     width: "80%",
     backgroundColor: "black",
@@ -185,6 +162,24 @@ const styles = StyleSheet.create({
   articleContainer: {
     justifyContent: "space-between",
     backgroundColor: "#eee",
+    width: "85%",
+    flexDirection: "row",
+    padding: "2%",
+    borderRadius: 10,
+    marginVertical: "2%",
+    alignSelf: "center",
+    shadowColor: "gray",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.5,
+  },
+  articleContainer2: {
+    justifyContent: "space-between",
+    backgroundColor: "#eee",
+    borderColor: "#1E90FF",
+    borderWidth: 2,
     width: "85%",
     flexDirection: "row",
     padding: "2%",

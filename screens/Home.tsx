@@ -1,27 +1,51 @@
-import { Button, StyleSheet, TouchableOpacity } from "react-native";
-import { useState, useRef, useEffect } from "react";
+import { ActivityIndicator, Button, StyleSheet, TouchableOpacity } from "react-native";
+import { useState} from "react";
 
-import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
-import { lineAnalysis } from "../scanningMotors/lineAnalysis";
-import ocrResultExample from "../tests/GoogeOcrResult";
-import { RootTabScreenProps } from "../types";
+import * as ImagePicker from 'expo-image-picker';
+import {Image } from 'react-native';
+import { scanMotor } from "../scanningMotors/scanningMotor";
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function Home({ navigation }: any) {
-  const [photo, setPhoto] = useState<any>();
+  // const [photo, setPhoto] = useState<any>();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [loading , setLoading] = useState(false);
+
+  const handleSelectImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.uri);
+    }
+  };
+
+  const handleResultProcessImage = async () => {
+    if (selectedImage) {
+      try {
+        setLoading(true);
+        const data = await scanMotor(selectedImage).finally(() => {
+          setLoading(false);
+        }).catch((error) => {
+          console.log(error);
+        });
+        navigation.navigate("ScanningResult", { scanResult: data });
+      } catch (error) {
+        console.log(error);
+          setLoading(false);
+      }
+    }
+    // setLoading(false);
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scannez vos tickets de caisse</Text>
-      <TouchableOpacity
-        onPress={() => {
-          const scanResult = lineAnalysis(ocrResultExample);
-          navigation.navigate("ScanningResult", { scanResult: scanResult });
-        }}
-        style={styles.buttonTest}
-      >
-        <Text style={styles.buttonTextTest}>test</Text>
-      </TouchableOpacity>
+      {selectedImage && <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200, borderColor:'black', borderWidth:2 }} />}
       <View
         style={styles.separator}
         lightColor="#eee"
@@ -37,13 +61,33 @@ export default function Home({ navigation }: any) {
           super marchés préférées.
         </Text>
       </View>
+      <View style={{flexDirection:'row'}}>
+
+      </View>
+      <View style={{flexDirection:'row'}}>
+      <TouchableOpacity
+        onPress={handleSelectImage}
+        style={styles.button}
+        >
+        <FontAwesome name="picture-o" size={24} color="black" />
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate("Scanning")}
         style={styles.button}
-      >
-        <Text style={styles.buttonText}>+</Text>
+        >
+        <FontAwesome name="camera" size={24} color="black" />
       </TouchableOpacity>
-      {/* </View> */}
+        </View>
+        <TouchableOpacity
+        onPress={handleResultProcessImage}
+        disabled={selectedImage == null ? true : false}
+        style={[styles.button2, {backgroundColor: selectedImage == null ? '#7d7f82' : '#306bab'}]}
+        >
+        {loading == true ? 
+        <ActivityIndicator size="small" color="white" /> 
+        :
+        <Text style={{fontSize:20}}> Analyse </Text>}
+      </TouchableOpacity>
     </View>
   );
 }
@@ -57,6 +101,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    paddingBottom: '10%',
   },
   separator: {
     marginVertical: 30,
@@ -78,10 +123,33 @@ const styles = StyleSheet.create({
     width: "15%",
     aspectRatio: 1,
     borderRadius: 100,
-    position: "absolute",
-    bottom: "5%",
+    // position: "absolute",
+    // bottom: "5%",
+    marginTop: '5%',
+    marginHorizontal: '5%',
     textAlign: "center",
-    alignContent: "center",
+    alignContent: "flex-end",
+    justifyContent: "center",
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+  },
+  button2: {
+    alignItems: "center",
+    backgroundColor: "#306bab",
+    width: "70%",
+    height: "5%",
+    // aspectRatio: 1,
+    borderRadius: 20,
+    // position: "absolute",
+    // bottom: "5%",
+    marginTop: '5%',
+    marginHorizontal: '5%',
+    textAlign: "center",
+    alignContent: "flex-end",
     justifyContent: "center",
     shadowColor: "black",
     shadowOffset: {

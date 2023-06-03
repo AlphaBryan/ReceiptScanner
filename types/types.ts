@@ -7,6 +7,7 @@ type market = {
 type client = {
   type : string;
   numberClient : string;
+  paymentMethod : string;
 }
 type product = {
   name: string;
@@ -16,6 +17,10 @@ type product = {
 type ticket = {
   market: market;
   client: client;
-  Products: product[];
-  total: number;
+  products: product[];
+  totals: {
+    total: number;
+    tax: number;
+    subTotal : number;
+  };
 };

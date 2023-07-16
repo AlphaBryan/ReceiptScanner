@@ -37,23 +37,32 @@ const ProfileScreen = () => {
       </View>
     );
   }
+  //formate the date to be more readable
+  const userDate = new Date(user.created_at);
+  const formattedDate = userDate.toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{user.name} Profile</Text>
+      <Text style={styles.title}> Profile de {user.name} </Text>
       <View style={styles.profileContainer}>
         <View style={styles.userInfoContainer}>
-          <Text style={styles.label}>Username:</Text>
+          <Text style={styles.label}>Nom d'utilisateur:</Text>
           <Text style={styles.value}>{user.username}</Text>
 
-          <Text style={styles.label}>Number of Tickets:</Text>
+          <Text style={styles.label}>Ticket Scannés:</Text>
           <Text style={styles.value}>{user.scannedTickets}</Text>
 
-          <Text style={styles.label}>Favorite Store:</Text>
+          <Text style={styles.label}>Magasion Favoris:</Text>
           <Text style={styles.value}>{user.favoriteStore}</Text>
 
-          <Text style={styles.label}>Join Date:</Text>
-          <Text style={styles.value}>{user.created_at}</Text>
+          <Text style={styles.label}>Date d'inscription:</Text>
+          <Text style={styles.value}>{formattedDate}</Text>
 
           {/* Add more fields as needed */}
 

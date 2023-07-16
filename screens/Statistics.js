@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { ServerGetRequest, ServerPostRequest } from '../database/Database';
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -102,6 +102,9 @@ const StatisticsScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Vos statistiques</Text>
+      <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-start' , paddingLeft:'10%',paddingTop:"2%"}}>
+        <Image source={{ uri: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWNxZDI5bWU4dHlqZGZxN3N2YzE4dmc4dXV1ZndiMHJvYXVhbG0yeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cj87CxfRtrUifF3Ryk/giphy.gif" }} style={{ width: '15%', aspectRatio: 1 }} />
+      </View>
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {monthStatistics && !isLoading ? (

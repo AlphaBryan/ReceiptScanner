@@ -60,7 +60,7 @@ const SearchScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Product Search</Text>
+            <Text style={styles.title}>Recherche de produit</Text>
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
@@ -78,7 +78,7 @@ const SearchScreen = () => {
                     keyExtractor={(i, index) => index.toString()}
                     renderItem={renderItem}
                     contentContainerStyle={styles.flatListContent}
-                    showsVerticalScrollIndicator={false} // Remove vertical scroll bar
+                    showsVerticalScrollIndicator={false} 
                 />
             ) : (
                 // <Text style={styles.noResultsText}>No results found</Text>

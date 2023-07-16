@@ -39,7 +39,7 @@ export default function ScanningResult({ navigation, route }: any) {
   if (loading == true) {
     return (
       <View style={styles.firstContainer}>
-        <Text style={[styles.pageTitle]}>Scanning Ticket</Text>
+        <Text style={[styles.pageTitle]}>TakingPicture Ticket</Text>
         <Text style={styles.marketName}>Loading...</Text>
         <ActivityIndicator
           size="large"

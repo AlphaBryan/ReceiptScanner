@@ -31,6 +31,6 @@ export async function scanningMotors(file: string) {
     // console.log("fileContent: ", fileContent);
     return text;
   } catch (error) {
-    console.log("Scanning motors error: ", error);
+    console.log("TakingPicture motors error: ", error);
   }
 }

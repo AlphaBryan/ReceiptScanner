@@ -8,11 +8,12 @@ import { scanningMotors } from "../../scanningMotors/scanningMotors";
 import TextRecognition from "react-native-text-recognition";
 import { RootStackScreenProps } from '../../types';
 
-export default function Scanning({ navigation }: any) {
+export default function TakingPicture({ navigation,route }: any) {
   const camera = useRef();
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [photo, setPhoto] = useState<any>();
+  // const setSelectedImage = route.params.setSelectedImage;
 
   useEffect(() => {
     (async () => {
@@ -72,11 +73,8 @@ export default function Scanning({ navigation }: any) {
     }
   }
   async function sendPicture() {
-    console.log("Send photo to OCR. ");
     try {
-      // scanningMotors(photo);
-      navigation.goBack();
-      navigation.navigate("ScanningResult" , { photo: photo });
+       navigation.navigate("Scan", { capturedPhoto: photo.uri });
     } catch (error) {
       console.log("erreur: ", error);
     }

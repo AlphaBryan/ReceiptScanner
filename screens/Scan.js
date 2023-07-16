@@ -1,5 +1,5 @@
 import { ActivityIndicator, Button, StyleSheet, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Text, View } from "../components/Themed";
 import * as ImagePicker from 'expo-image-picker';
@@ -7,9 +7,16 @@ import { Image } from 'react-native';
 import { scanMotor } from "../scanningMotors/scanningMotor";
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function Scan({ navigation }) {
-  const [selectedImage, setSelectedImage] = useState(null);
+export default function Scan({ navigation , route}) {
+  const capturedPhoto = route?.params?.capturedPhoto;
+  const [selectedImage, setSelectedImage] = useState(capturedPhoto);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (capturedPhoto) {
+      setSelectedImage(capturedPhoto);
+    }
+  }, [capturedPhoto]);
 
   const handleSelectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -50,7 +57,7 @@ export default function Scan({ navigation }) {
         <TouchableOpacity onPress={handleSelectImage} style={styles.button}>
           <FontAwesome name="picture-o" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Scanning")} style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate("TakingPicture", { setSelectedImage })} style={styles.button}>
           <FontAwesome name="camera" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -77,7 +84,7 @@ export default function Scan({ navigation }) {
           L'application va ensuite analyser votre ticket et vous donner le résultat.
         </Text>
       </View>
-      
+
     </View>
   );
 }

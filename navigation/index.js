@@ -16,16 +16,16 @@ import { ColorSchemeName, Pressable } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import Scanning from "../screens/Scanning/Scanning";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import Home from "../screens/Scan";
 import Profil from "../screens/Profil";
 import LinkingConfiguration from "./LinkingConfiguration";
-import ScanningResult from "../screens/Scanning/ScanningResult";
 import Scan from "../screens/Scan";
 import StatisticsScreen from "../screens/Statistics";
 import SearchScreen from "../screens/Search";
 import TicketListScreen from "../screens/TicketList";
+import ScanningResult from "../screens/Scanning/ScanningResult";
+import TakingPicture from "../screens/Scanning/TakingPicture";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -68,7 +68,7 @@ function RootNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Scanning" component={Scanning} />
+        <Stack.Screen name="TakingPicture" component={TakingPicture} />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -107,7 +107,7 @@ function BottomTabNavigator() {
         options={({ navigation }) => ({
           title: "Statistics",
 
-          tabBarIcon: ({ color, size }) => <TabBarIcon name="calculator" color={color} size={size*0.9} />,
+          tabBarIcon: ({ color, size }) => <TabBarIcon name="calculator" color={color} size={size * 0.9} />,
         })}
       />
 

@@ -18,21 +18,16 @@ import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import Scanning from "../screens/Scanning/Scanning";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import Home from "../screens/Home";
+import Home from "../screens/Scan";
 import Profil from "../screens/Profil";
-import {
-  RootStackParamList,
-  RootTabParamList,
-  RootTabScreenProps,
-} from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import ScanningResult from "../screens/Scanning/ScanningResult";
+import Scan from "../screens/Scan";
+import StatisticsScreen from "../screens/Statistics";
+import SearchScreen from "../screens/Search";
+import TicketListScreen from "../screens/TicketList";
 
-export default function Navigation({
-  colorScheme,
-}: {
-  colorScheme: ColorSchemeName;
-}) {
+export default function Navigation({ colorScheme }) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
@@ -47,7 +42,7 @@ export default function Navigation({
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
   return (
@@ -67,6 +62,11 @@ function RootNavigator() {
         component={ScanningResult}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="TicketList"
+        component={TicketListScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Scanning" component={Scanning} />
       </Stack.Group>
@@ -78,35 +78,55 @@ function RootNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
+const BottomTab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Scan"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
         headerShown: false,
       }}
     >
       <BottomTab.Screen
-        name="TabOne"
-        component={Home}
-        options={({ navigation }: RootTabScreenProps<"TabOne">) => ({
-          title: "Home",
+        name="Scan"
+        component={Scan}
+        options={({ navigation }) => ({
+          title: "Scan",
 
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color, size }) => <TabBarIcon name="home" color={color} size={size * 0.9} />,
         })}
       />
-      
+
       <BottomTab.Screen
-        name="TabTwo"
+        name="Statistics"
+        component={StatisticsScreen}
+        options={({ navigation }) => ({
+          title: "Statistics",
+
+          tabBarIcon: ({ color, size }) => <TabBarIcon name="calculator" color={color} size={size*0.9} />,
+        })}
+      />
+
+      <BottomTab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={({ navigation }) => ({
+          title: "Search",
+
+          tabBarIcon: ({ color, size }) => <TabBarIcon name="search" color={color} size={size * 0.9} />,
+        })}
+      />
+
+      <BottomTab.Screen
+        name="Profil"
         component={Profil}
         options={{
           title: "Profil",
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          tabBarIcon: ({ color, size }) => <TabBarIcon name="user" color={color} size={size * 0.9} />,
         }}
       />
     </BottomTab.Navigator>
@@ -116,9 +136,6 @@ function BottomTabNavigator() {
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
+function TabBarIcon(props) {
   return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

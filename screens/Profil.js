@@ -67,12 +67,27 @@ const ProfileScreen = () => {
           {/* Add more fields as needed */}
 
           <TouchableOpacity style={styles.button} onPress={handleViewTickets}>
-            <Text style={styles.buttonText}>View Tickets</Text>
+            <Text style={styles.buttonText}>Vos tickets</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.logoutButton, { backgroundColor: '#ff4c4c' }]} onPress={handleLogout}>
             <Text style={styles.logoutButtonText}>Logout</Text>
           </TouchableOpacity>
+
+
+          <View>
+            {/* text qui sépare les parties: Confidentialité */}
+            <Text style={styles.subTitle}> Confidentialité </Text>
+            <TouchableOpacity style={[styles.button, { backgroundColor: '#183555' }]} onPress={() => { }}>
+              <Text style={styles.buttonText}>Récapitualif de mes informations</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.button, { backgroundColor: '#8B0000' }]} onPress={() => { }}>
+              <Text style={styles.buttonText}>Supprimer mes informations</Text>
+            </TouchableOpacity>
+          </View>
+
+
         </View>
         <View style={styles.profilePictureContainer}>
           <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
@@ -91,6 +106,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+    paddingTop: '20%',
+  },
+  subTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',

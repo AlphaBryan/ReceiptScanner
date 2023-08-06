@@ -8,10 +8,11 @@ import {
 import { Text, View } from "../../components/Themed";
 import { Entypo } from "@expo/vector-icons";
 
-export default function ScanningResult({ navigation, route }: any) {
+export default function ScanningResult({ navigation, route }) {
   const [loading, setLoading] = useState(false);
-  const scanResult = route.params.scanResult;
-  const ticketEmpty: ticket = {
+  const scanResult = route?.params?.scanResult;
+  console.log(scanResult);
+  const ticketEmpty = {
     market: {
       name: "Aucun nom de magasin trouvé",
       address: "Aucune adresse de magasin trouvé",
@@ -21,7 +22,7 @@ export default function ScanningResult({ navigation, route }: any) {
     client: {
       type: "Type de client: Aucun type de client trouvé",
       numberClient: "Aucun numéro de client trouvé",
-      paymentMethod: "Not found",
+      methodePaiement: "Not found",
     },
     products: [],
     totals: {
@@ -30,13 +31,13 @@ export default function ScanningResult({ navigation, route }: any) {
       subTotal: -1,
     },
   };
-  const [ticket, setTicket] = useState<ticket>(ticketEmpty);
+  const [ticket, setTicket] = useState(ticketEmpty);
 
   useEffect(() => {
     setTicket(scanResult);
   }, []);
 
-  if (loading == true) {
+  if (loading) {
     return (
       <View style={styles.firstContainer}>
         <Text style={[styles.pageTitle]}>TakingPicture Ticket</Text>
@@ -49,6 +50,7 @@ export default function ScanningResult({ navigation, route }: any) {
       </View>
     );
   }
+
   return (
     <View style={styles.firstContainer}>
       <View style={{ flexDirection: "row" }}>
@@ -63,37 +65,36 @@ export default function ScanningResult({ navigation, route }: any) {
           <Entypo name="info-with-circle" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.marketName}>{ticket.market.name}</Text>
-      <Text style={styles.marketInfo}>{ticket.market.address}</Text>
-      <Text style={styles.marketInfo}>{ticket.market.city}</Text>
-      <Text style={styles.marketInfo}>{ticket.market.phone}</Text>
-        <>
-          <Text style={[styles.clientInfo, { paddingTop: "2%" }]}>
-            <Text style={ { fontWeight: "bold" }}>
-              Payement method:
-            </Text>
-            { ticket?.client?.paymentMethod != null ? ' '+ ticket?.client?.paymentMethod  :' '+ ticketEmpty.client.paymentMethod}
-          </Text>
-        </>
+      <Text style={styles.marketName}>{ticket?.magasin?.nom}</Text>
+      <Text style={styles.marketInfo}>{ticket?.magasin?.slogan}</Text>
+      <Text style={styles.marketInfo}>{ticket?.magasin?.numero}</Text>
+      <>
+        <Text style={[styles.clientInfo, { paddingTop: "2%" }]}>
+          <Text style={{ fontWeight: "bold" }}>Payement method:</Text>
+          {ticket?.client?.methodePaiement != null
+            ? " " + ticket?.client?.methodePaiement
+            : " " + ticketEmpty.client.methodePaiement}
+        </Text>
+      </>
       <View
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
       <ScrollView style={styles.articlesContainer}>
-        {ticket.products.length == 0 && (
+        {ticket?.articles?.length === 0 && (
           <View style={{ marginTop: "10%" }}>
             <Text style={styles.text}>Aucun produit trouvé</Text>
-            <Text style={styles.text}>Veuillez résessayer</Text>
+            <Text style={styles.text}>Veuillez réessayer</Text>
           </View>
         )}
-        {ticket.products.map((product, index) => (
+        {ticket?.articles?.map((product, index) => (
           <View style={styles.articleContainer} key={index}>
             <Text style={styles.text}>
-              <Text style={{ fontWeight: "bold" }}>{product.name} </Text> x{" "}
-              {product.quantity}
+              <Text style={{ fontWeight: "bold" }}>{product?.nom} </Text> x{" "}1
+              {/* {product?.quantity} */}
             </Text>
-            <Text style={styles.text}>{product.price} $</Text>
+            <Text style={styles.text}>{product?.prix} $</Text>
           </View>
         ))}
       </ScrollView>
@@ -101,19 +102,19 @@ export default function ScanningResult({ navigation, route }: any) {
         <Text style={styles.text}>
           <Text style={{ fontWeight: "bold" }}>SOUS-TOTAL </Text>
         </Text>
-        <Text style={styles.text}>{ticket?.totals?.subTotal} $</Text>
+        <Text style={styles.text}>{ticket?.sousTotal} $</Text>
       </View>
       <View style={[styles.articleContainer2, { marginBottom: "0%" }]}>
         <Text style={styles.text}>
           <Text style={{ fontWeight: "bold" }}>TAXES (TPS + TVQ)</Text>
         </Text>
-        <Text style={styles.text}>{ticket.totals.tax} $</Text>
+        <Text style={styles.text}>{ticket?.taxes} $</Text>
       </View>
       <View style={[styles.articleContainer2, { marginBottom: "10%" }]}>
         <Text style={styles.text}>
           <Text style={{ fontWeight: "bold" }}>TOTAL </Text>
         </Text>
-        <Text style={styles.text}>{ticket.totals.total} $</Text>
+        <Text style={styles.text}>{ticket?.total} $</Text>
       </View>
     </View>
   );

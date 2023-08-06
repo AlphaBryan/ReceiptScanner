@@ -91,7 +91,7 @@ export async function ServerPostRequestImage(endpoint, imageUri) {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.log("- ServerPostRequest:", error.message);
+        console.log("- ServerPostRequestImage:", error.message);
         console.log("  - Error request uri:", uri);
         return null;
     }

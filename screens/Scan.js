@@ -6,8 +6,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'react-native';
 import { scanMotor } from "../scanningMotors/scanningMotor";
 import { FontAwesome } from '@expo/vector-icons';
+import { ServerPostRequestImage } from "../database/Database";
 
-export default function Scan({ navigation , route}) {
+export default function Scan({ navigation, route }) {
   const capturedPhoto = route?.params?.capturedPhoto;
   const [selectedImage, setSelectedImage] = useState(capturedPhoto);
   const [loading, setLoading] = useState(false);
@@ -34,12 +35,20 @@ export default function Scan({ navigation , route}) {
     if (selectedImage) {
       try {
         setLoading(true);
-        const data = await scanMotor(selectedImage).finally(() => {
-          setLoading(false);
-        }).catch((error) => {
-          console.log(error);
-        });
-        navigation.navigate("ScanningResult", { scanResult: data });
+        // scan with the server and get the result
+        const data = await ServerPostRequestImage("scan", selectedImage)
+          .catch((error) => {
+            // Handle any errors that occur during the upload process
+            console.error('Failed to upload image:', error);
+          })
+          .then((data) => {
+            // Handle the response data from the server
+            console.log('Image uploaded successfully:');
+            console.log('oui:', data);
+            navigation.navigate("ScanningResult", { scanResult: data });
+          })
+
+        
       } catch (error) {
         console.log(error);
         setLoading(false);
